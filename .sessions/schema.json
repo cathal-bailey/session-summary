@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AI Session Summary",
+  "description": "Schema for AI session summary JSON output",
+  "type": "object",
+  "required": ["sessionId", "timestamp", "tasks", "concepts", "files"],
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "description": "Unique identifier for the session (UUID or timestamp-based)"
+    },
+    "sessionName": {
+      "type": "string",
+      "description": "Short descriptive name for the session (1-2 words)"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session end time in ISO-8601 format"
+    },
+    "startTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session start time in ISO-8601 format"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Session duration (e.g., '45 minutes', '2 hours')"
+    },
+    "aiModel": {
+      "type": "string",
+      "description": "AI model used (e.g., 'GPT-4', 'Claude', 'unknown')"
+    },
+    "tokenCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Approximate token count for the session"
+    },
+    "tokenThreshold": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Token threshold configured for this session"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "List of tasks completed (max 5 recommended)",
+      "maxItems": 10,
+      "items": {
+        "type": "string"
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "description": "Concepts covered with explanations (max 10 recommended)",
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Concept name or title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Explanation of the concept"
+          },
+          "references": {
+            "type": "array",
+            "description": "External references (URLs, papers, repos)",
+            "items": {
+              "type": "object",
+              "required": ["type", "url"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["website", "paper", "github", "documentation", "other"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["beginner", "intermediate", "advanced"],
+            "description": "Difficulty level of the concept"
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": ["read", "modified", "created", "deleted"],
+      "properties": {
+        "read": {
+          "type": "array",
+          "description": "Files that were read (read-only access)",
+          "items": {
+            "type": "object",
+            "required": ["path"],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "purpose": {
+                "type": "string",
+                "description": "Why this file was read"
+              }
+            }
+          }
+        },
+        "modified": {
+          "type": "array",
+          "description": "Files that were modified",
+          "items": {
+            "type": "object",
+            "required": ["path", "changes"],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "changes": {
+                "type": "string",
+                "description": "Summary of changes made"
+              },
+              "reason": {
+                "type": "string",
+                "description": "Why these changes were necessary"
+              },
+              "diff": {
+                "type": "string",
+                "description": "Git diff output for the changes"
+              },
+              "linesAdded": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "linesRemoved": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "created": {
+          "type": "array",
+          "description": "New files created",
+          "items": {
+            "type": "object",
+            "required": ["path"],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "purpose": {
+                "type": "string",
+                "description": "Purpose of the new file"
+              },
+              "lineCount": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "deleted": {
+          "type": "array",
+          "description": "Files that were deleted",
+          "items": {
+            "type": "object",
+            "required": ["path"],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string",
+                "description": "Reason for deletion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "description": "Prerequisites needed to continue work",
+      "items": {
+        "type": "string"
+      }
+    },
+    "nextSteps": {
+      "type": "array",
+      "description": "Suggested next steps or actions",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or context"
+    }
+  }
+}

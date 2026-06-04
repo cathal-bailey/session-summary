@@ -1,0 +1,24 @@
+# Session state file (temporary, not version controlled)
+.sessions/.session-state.json
+
+# Optional: Uncomment to exclude all session summaries from version control
+# .sessions/session-*.md
+# .sessions/session-*.json
+
+# Node modules (if CLI tool is added)
+node_modules/
+
+# Python virtual environment (if CLI tool is added)
+venv/
+__pycache__/
+*.pyc
+
+# IDE files
+.vscode/settings.json
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Made with Bob

@@ -1,0 +1,37 @@
+{
+  "sessions": [
+    {
+      "sessionId": "session-tool-creation-2026-06-04-140600",
+      "sessionName": "tool-creation",
+      "timestamp": "2026-06-04T14:06:00Z",
+      "duration": "120 minutes",
+      "tokenCount": 50000,
+      "filesModified": 0,
+      "filesCreated": 8,
+      "filesRead": 1,
+      "tasksCompleted": 5,
+      "conceptsCovered": 5
+    },
+    {
+      "sessionId": "session-apicast-pr-review-2026-06-04-155443",
+      "sessionName": "apicast-pr-review",
+      "project": "session-summary",
+      "timestamp": "2026-06-04T14:54:43Z",
+      "duration": "~90 minutes",
+      "tokenCount": 69358,
+      "tokenMonitoring": true,
+      "filesModified": 0,
+      "filesCreated": 0,
+      "filesRead": 0,
+      "tasksCompleted": 5,
+      "conceptsCovered": 10,
+      "sessionType": "discussion-review"
+    }
+  ],
+  "lastUpdated": "2026-06-04T14:54:43Z",
+  "totalSessions": 2,
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Index of all AI session summaries"
+  }
+}

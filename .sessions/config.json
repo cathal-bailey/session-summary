@@ -1,0 +1,16 @@
+{
+  "tokenThreshold": 100000,
+  "warningThreshold": 0.7,
+  "criticalThreshold": 0.85,
+  "tokenMonitoring": {
+    "enabled": false,
+    "autoNotify": false,
+    "notifyAtWarning": true,
+    "notifyAtCritical": true
+  },
+  "defaultModel": "unknown",
+  "sessionDirectory": ".sessions",
+  "includeGitDiff": true,
+  "maxConceptBulletPoints": 10,
+  "maxTaskBulletPoints": 5
+}
