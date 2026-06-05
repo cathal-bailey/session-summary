@@ -15,13 +15,13 @@ When working with AI assistants, it's easy to lose track of what was changed, wh
 
 ## Features
 
-✅ **Model Agnostic** - Works with GPT-4, Claude, Gemini, or any AI assistant  
-✅ **Dual Format Output** - Human-readable Markdown + machine-readable JSON  
-✅ **Git Integration** - Automatic file change detection via git diff  
-✅ **Token Monitoring** - Track usage and get warnings before hitting limits  
-✅ **Comprehensive Documentation** - Captures tasks, concepts, files, and context  
-✅ **Session Continuity** - Resume work seamlessly with full context  
-✅ **Version Controlled** - Session summaries tracked in your repository  
+**Model Agnostic** - Works with GPT-4, Claude, Gemini, or any AI assistant  
+**Dual Format Output** - Human-readable Markdown + machine-readable JSON  
+**Git Integration** - Automatic file change detection via git diff  
+**Token Monitoring** - Track usage and get warnings before hitting limits  
+**Comprehensive Documentation** - Captures tasks, concepts, files, and context  
+**Session Continuity** - Resume work seamlessly with full context  
+**Version Controlled** - Session summaries tracked in your repository  
 
 ## Quick Start
 
