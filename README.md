@@ -410,18 +410,6 @@ This tool is designed to be extended. Contributions welcome for:
 - VSCode extension
 - Documentation improvements
 
-## License
-
-MIT License - Feel free to use and modify for your needs.
-
-## Support
-
-For issues or questions:
-1. Check the `.sessions/INSTRUCTIONS.md` file
-2. Review example sessions in `.sessions/`
-3. Ensure git is properly initialized
-4. Verify AI assistant can read files and execute commands
-
 ---
 
 **Version**: 1.0.0  
