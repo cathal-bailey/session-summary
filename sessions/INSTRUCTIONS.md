@@ -14,9 +14,9 @@ When a developer says **"complete session summary"** or **"generate session summ
 
 ### Step 1: Read Configuration and Template
 
-1. Read `.sessions/config.json` to understand token thresholds and settings
-2. Read `.sessions/TEMPLATE.md` to understand the expected output format
-3. Read `.sessions/schema.json` to understand the JSON structure requirements
+1. Read `sessions/config.json` to understand token thresholds and settings
+2. Read `sessions/TEMPLATE.md` to understand the expected output format
+3. Read `sessions/schema.json` to understand the JSON structure requirements
 
 ### Step 2: Determine Session Metadata
 
@@ -26,7 +26,7 @@ Gather the following information:
 - **Timestamp**: Use current date/time in ISO-8601 format
 - **Duration**: Calculate from session start (if tracked) or estimate based on conversation
 - **AI Model**: Identify yourself if possible (e.g., "GPT-4", "Claude-3.5", "Gemini"), otherwise use "unknown"
-- **Token Count**: Check if `.sessions/.session-state.json` exists and read token count, or estimate based on conversation length
+- **Token Count**: Check if `sessions/.session-state.json` exists and read token count, or estimate based on conversation length
 
 ### Step 3: Analyze Git Changes (If Applicable)
 
@@ -166,7 +166,7 @@ Based on the work completed, suggest logical next actions:
 
 ### Step 8: Generate Output Files
 
-Create two files in the `.sessions/` directory:
+Create two files in the `sessions/` directory:
 
 #### Markdown File: `session-[name]-YYYY-MM-DD-HHMMSS.md`
 
@@ -187,7 +187,7 @@ Example: `session-auth-refactor-2026-06-04-135500.json`
 
 ### Step 9: Update Session Index
 
-If `.sessions/index.json` exists, append the new session entry. If it doesn't exist, create it with the first entry.
+If `sessions/index.json` exists, append the new session entry. If it doesn't exist, create it with the first entry.
 
 Structure:
 ```json
@@ -210,7 +210,7 @@ Structure:
 
 ### Step 10: Clean Up Session State
 
-If `.sessions/.session-state.json` exists, you may archive it or reset it for the next session (optional).
+If `sessions/.session-state.json` exists, you may archive it or reset it for the next session (optional).
 
 ---
 
@@ -220,7 +220,7 @@ Token monitoring is **disabled by default**. Check configuration before proceedi
 
 ### Check if Token Monitoring is Enabled
 
-1. Read `.sessions/config.json`
+1. Read `sessions/config.json`
 2. Check `tokenMonitoring.enabled` field
 3. If `false`, skip all token monitoring steps
 4. If `true`, proceed with monitoring
@@ -229,8 +229,8 @@ Token monitoring is **disabled by default**. Check configuration before proceedi
 
 **Check Token Threshold:**
 
-1. Read current token count from `.sessions/.session-state.json` (if exists)
-2. Read threshold from `.sessions/config.json`
+1. Read current token count from `sessions/.session-state.json` (if exists)
+2. Read threshold from `sessions/config.json`
 3. Calculate percentage: `(currentTokens / threshold) * 100`
 
 **Automatic Notifications (if `autoNotify` is true):**
@@ -280,7 +280,7 @@ If token count is available, include status:
 
 To enable token monitoring, users should:
 
-1. Edit `.sessions/config.json`
+1. Edit `sessions/config.json`
 2. Set `tokenMonitoring.enabled` to `true`
 3. Optionally configure notification preferences:
    - `autoNotify`: Enable automatic threshold notifications

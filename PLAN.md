@@ -19,7 +19,7 @@ Each session summary must include:
 - **JSON**: Machine-readable format for programmatic parsing and tooling integration
 
 ### 3. Storage Location
-- Sessions stored in `.sessions/` directory (version controlled but hidden)
+- Sessions stored in `sessions/` directory (version controlled but hidden)
 - Naming convention: `session-name-YYYY-MM-DD-HHMMSS.md` and `.json` where name is a one or two word description of the topic.
 - Configuration file: `config.json` for token thresholds and other settings
 
@@ -28,7 +28,7 @@ Each session summary must include:
 ```mermaid
 graph TD
     A[Developer completes AI session] --> B[Developer: complete session summary]
-    B --> C[AI reads instructions from .sessions/INSTRUCTIONS.md]
+    B --> C[AI reads instructions from sessions/INSTRUCTIONS.md]
     C --> D[AI performs self-reflection on conversation]
     C --> E[AI runs git diff analysis]
     D --> F[Extract tasks and concepts]
@@ -37,15 +37,15 @@ graph TD
     G --> H
     H --> I[Write markdown summary]
     H --> J[Write JSON summary]
-    I --> K[.sessions/session-TIMESTAMP.md]
-    J --> L[.sessions/session-TIMESTAMP.json]
+    I --> K[sessions/session-TIMESTAMP.md]
+    J --> L[sessions/session-TIMESTAMP.json]
 ```
 
 ## Implementation Components
 
 ### 1. Project Structure
 ```
-.sessions/
+sessions/
 ├── INSTRUCTIONS.md          # Instructions for AI to generate summaries
 ├── TEMPLATE.md              # Template structure for summaries
 ├── schema.json              # JSON schema for machine-readable output
@@ -175,7 +175,7 @@ When loading a previous session:
 ## Implementation Steps
 
 ### Phase 1: Core Infrastructure
-1. Create `.sessions/` directory structure
+1. Create `sessions/` directory structure
 2. Write comprehensive INSTRUCTIONS.md for AI models
 3. Create TEMPLATE.md with example structure
 4. Define JSON schema
@@ -220,7 +220,7 @@ When loading a previous session:
 - Both formats contain same information
 
 ### Version Control Integration
-- `.sessions/` directory is tracked in git
+- `sessions/` directory is tracked in git
 - Provides history of AI interactions
 - Enables team collaboration and review
 - Can be excluded via .gitignore if needed

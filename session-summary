@@ -1,0 +1,245 @@
+#!/usr/bin/env bash
+
+# AI Session Summary Tool - CLI Wrapper (Centralized Storage)
+# This script provides a simple command to trigger AI session summary generation
+# All summaries are stored centrally in ~/repos/session-summary/sessions/
+
+set -e
+
+VERSION="1.0.0"
+
+# Find the centralized sessions directory
+SESSIONS_ROOT="$HOME/repos/session-summary/sessions"
+
+# If script is in ~/bin, try to find the actual repo
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "$SCRIPT_DIR" == */bin ]]; then
+    if [ -d "$HOME/repos/session-summary/sessions" ]; then
+        SESSIONS_ROOT="$HOME/repos/session-summary/sessions"
+    elif [ -d "$HOME/session-summary/sessions" ]; then
+        SESSIONS_ROOT="$HOME/session-summary/sessions"
+    fi
+fi
+
+INSTRUCTIONS_FILE="$SESSIONS_ROOT/INSTRUCTIONS.md"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_info() {
+    echo -e "${BLUE}ℹ${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+# Function to show usage
+show_usage() {
+    cat << 'EOF'
+AI Session Summary Tool v1.0.0
+
+Usage:
+  session-summary [session-name] [--tokenate]    Generate session summary
+  session-summary --init                          Show centralized storage info
+  session-summary --help                          Show this help message
+  session-summary --version                       Show version
+
+Options:
+  --tokenate                               Enable token monitoring for this session
+
+Examples:
+  session-summary                          Generate summary (will prompt for name)
+  session-summary auth-refactor            Generate summary named "auth-refactor"
+  session-summary auth-refactor --tokenate Generate summary with token monitoring
+  session-summary --tokenate my-feature    Enable token monitoring (order doesn't matter)
+
+Description:
+  This tool helps AI assistants generate comprehensive session summaries.
+  All summaries are stored centrally in ~/repos/session-summary/sessions/
+  organized by project name.
+  
+  When you run this command, copy the output and paste it to your AI assistant.
+  The AI will read the instructions and generate a detailed summary of your session.
+  
+  Token monitoring is disabled by default. Use --tokenate to enable it for a session.
+
+EOF
+}
+
+# Function to get current project name
+get_project_name() {
+    # Try to get from git remote
+    if git remote get-url origin &>/dev/null; then
+        # Extract repo name from git URL
+        local url=$(git remote get-url origin)
+        local repo=$(basename "$url" .git)
+        echo "$repo"
+    else
+        # Fall back to directory name
+        basename "$(pwd)"
+    fi
+}
+
+# Function to show centralized storage info
+init_tool() {
+    print_info "Centralized session storage enabled"
+    print_info "Sessions directory: $SESSIONS_ROOT"
+    echo ""
+    print_info "All session summaries are stored centrally, organized by project:"
+    echo "  $SESSIONS_ROOT/project-name/session-name-YYYY-MM-DD-HHMMSS.md"
+    echo ""
+    print_success "No per-project setup needed - tool is ready to use!"
+    return 0
+}
+
+# Function to check if centralized sessions directory exists
+check_initialized() {
+    if [ ! -d "$SESSIONS_ROOT" ]; then
+        print_error "Centralized sessions directory not found: $SESSIONS_ROOT"
+        print_info "Please ensure session-summary repository is cloned to:"
+        print_info "  $HOME/repos/session-summary/"
+        return 1
+    fi
+    
+    if [ ! -f "$INSTRUCTIONS_FILE" ]; then
+        print_error "Instructions file not found: $INSTRUCTIONS_FILE"
+        print_info "Please ensure session-summary repository is properly set up"
+        return 1
+    fi
+    
+    return 0
+}
+
+# Function to generate the AI prompt
+generate_prompt() {
+    local session_name="$1"
+    local enable_tokens="$2"
+    local project_name="$3"
+    
+    cat << EOF
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 AI SESSION SUMMARY REQUEST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Please generate a comprehensive session summary following these steps:
+
+1. Read the instructions: $INSTRUCTIONS_FILE
+2. Follow all steps in the instructions to generate the summary
+3. Use session name: ${session_name:-"(please suggest a name)"}
+4. Project name: $project_name
+5. Save to: $SESSIONS_ROOT/$project_name/
+6. Create both markdown and JSON output files
+7. Update the session index at: $SESSIONS_ROOT/index.json
+EOF
+
+    if [ "$enable_tokens" = "true" ]; then
+        cat << EOF
+8. ENABLE TOKEN MONITORING: Set tokenMonitoring.enabled to true for this session
+
+EOF
+    fi
+
+    cat << EOF
+
+The instructions file contains complete details on:
+- How to analyze the conversation
+- How to detect file changes via git
+- What to include in the summary
+- Output format and structure
+EOF
+
+    if [ "$enable_tokens" = "true" ]; then
+        cat << EOF
+- Token monitoring and threshold warnings
+
+⚠️  TOKEN MONITORING ENABLED for this session
+EOF
+    fi
+
+    cat << EOF
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOF
+}
+
+# Main script logic
+main() {
+    # Initialize variables
+    SESSION_NAME=""
+    ENABLE_TOKENS="false"
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --help|-h)
+                show_usage
+                exit 0
+                ;;
+            --version|-v)
+                echo "AI Session Summary Tool v${VERSION}"
+                exit 0
+                ;;
+            --init)
+                init_tool
+                exit $?
+                ;;
+            --tokenate)
+                ENABLE_TOKENS="true"
+                shift
+                ;;
+            *)
+                # Assume it's the session name
+                if [ -z "$SESSION_NAME" ]; then
+                    SESSION_NAME="$1"
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Check if centralized sessions directory exists
+    if ! check_initialized; then
+        exit 1
+    fi
+    
+    # Get current project name
+    PROJECT_NAME=$(get_project_name)
+    
+    # Generate and display the prompt
+    print_success "Centralized sessions: $SESSIONS_ROOT"
+    print_info "Project: $PROJECT_NAME"
+    print_info "Summaries will be saved to: $SESSIONS_ROOT/$PROJECT_NAME/"
+    
+    if [ "$ENABLE_TOKENS" = "true" ]; then
+        print_warning "Token monitoring ENABLED for this session"
+    fi
+    
+    print_info "Copy the text below and paste it to your AI assistant:"
+    echo ""
+    
+    generate_prompt "$SESSION_NAME" "$ENABLE_TOKENS" "$PROJECT_NAME"
+    
+    print_info "After pasting to your AI, it will generate the session summary automatically."
+    echo ""
+}
+
+# Run main function
+main "$@"
+
+# Made with Bob

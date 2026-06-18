@@ -9,7 +9,7 @@
     "notifyAtCritical": true
   },
   "defaultModel": "unknown",
-  "sessionDirectory": ".sessions",
+  "sessionDirectory": "sessions",
   "includeGitDiff": true,
   "maxConceptBulletPoints": 10,
   "maxTaskBulletPoints": 5

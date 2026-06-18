@@ -15,13 +15,13 @@ When working with AI assistants, it's easy to lose track of what was changed, wh
 
 ## Features
 
-**Model Agnostic** - Works with GPT-4, Claude, Gemini, or any AI assistant  
-**Dual Format Output** - Human-readable Markdown + machine-readable JSON  
-**Git Integration** - Automatic file change detection via git diff  
-**Token Monitoring** - Track usage and get warnings before hitting limits  
-**Comprehensive Documentation** - Captures tasks, concepts, files, and context  
-**Session Continuity** - Resume work seamlessly with full context  
-**Version Controlled** - Session summaries tracked in your repository  
+✅ **Model Agnostic** - Works with GPT-4, Claude, Gemini, or any AI assistant  
+✅ **Dual Format Output** - Human-readable Markdown + machine-readable JSON  
+✅ **Git Integration** - Automatic file change detection via git diff  
+✅ **Token Monitoring** - Track usage and get warnings before hitting limits  
+✅ **Comprehensive Documentation** - Captures tasks, concepts, files, and context  
+✅ **Session Continuity** - Resume work seamlessly with full context  
+✅ **Version Controlled** - Session summaries tracked in your repository  
 
 ## Quick Start
 
@@ -50,8 +50,8 @@ See [INSTALL.md](INSTALL.md) for detailed installation instructions.
 # Navigate to your project
 cd ~/my-project
 
-# Copy the .sessions directory
-cp -r /path/to/session-summary/.sessions .
+# Copy the sessions directory
+cp -r /path/to/session-summary/sessions .
 
 # Or use the init command
 session-summary --init
@@ -78,15 +78,15 @@ This outputs a formatted prompt. **Copy and paste it to your AI assistant.**
 ### 5. AI Generates Summary
 
 The AI will automatically:
-1. Read `.sessions/INSTRUCTIONS.md`
+1. Read `sessions/INSTRUCTIONS.md`
 2. Analyze the conversation
 3. Detect file changes via git
 4. Generate markdown and JSON summaries
-5. Save to `.sessions/` directory
+5. Save to `sessions/` directory
 
 ### 6. Review Your Summary
 
-Find your summaries in `.sessions/`:
+Find your summaries in `sessions/`:
 - `session-my-feature-name-YYYY-MM-DD-HHMMSS.md` - Human-readable
 - `session-my-feature-name-YYYY-MM-DD-HHMMSS.json` - Machine-readable
 
@@ -107,7 +107,7 @@ $ session-summary auth-refactor
 You: [paste the formatted prompt]
 
 # AI generates the summary automatically
-AI: "Reading .sessions/INSTRUCTIONS.md..."
+AI: "Reading sessions/INSTRUCTIONS.md..."
 AI: "Analyzing conversation and detecting file changes..."
 AI: "Generated session-auth-refactor-2026-06-04-140000.md and .json"
 ```
@@ -131,7 +131,7 @@ AI: "No files modified - this was a review session. Generating summary..."
 ### Example 3: With Token Monitoring
 
 ```bash
-# Enable token monitoring in .sessions/config.json first
+# Enable token monitoring in sessions/config.json first
 You: "Let's work on the database refactor"
 AI: [helps with refactoring]
 AI: "⚠️ Token Usage: 70% of threshold reached."
@@ -147,7 +147,7 @@ AI: [generates summary with token usage info]
 
 ```bash
 # Load previous session
-You: "Read .sessions/session-auth-refactor-2026-06-04-140000.md and continue"
+You: "Read sessions/session-auth-refactor-2026-06-04-140000.md and continue"
 AI: [reads summary]
 AI: "I can see we refactored JWT validation. Next steps were integration tests."
 [... continue work ...]
@@ -158,7 +158,7 @@ $ session-summary auth-tests
 
 ## Configuration
 
-Edit `.sessions/config.json` to customize:
+Edit `sessions/config.json` to customize:
 
 ```json
 {
@@ -235,11 +235,11 @@ Each session summary includes:
 
 ## Token Monitoring (Opt-In Feature)
 
-Token monitoring is **disabled by default**. Enable it in `.sessions/config.json` if you want automatic tracking and notifications.
+Token monitoring is **disabled by default**. Enable it in `sessions/config.json` if you want automatic tracking and notifications.
 
 ### Enabling Token Monitoring
 
-Edit `.sessions/config.json`:
+Edit `sessions/config.json`:
 
 ```json
 {
@@ -258,7 +258,7 @@ Update token count manually (whether monitoring is enabled or not):
 
 ```bash
 # Update current token count
-cat > .sessions/.session-state.json << EOF
+cat > sessions/.session-state.json << EOF
 {
   "sessionStartTime": "2026-06-04T14:00:00Z",
   "currentTokenCount": 50000,
@@ -302,7 +302,7 @@ When token monitoring is enabled, you'll receive warnings:
 ## File Structure
 
 ```
-.sessions/
+sessions/
 ├── INSTRUCTIONS.md              # AI instructions for generating summaries
 ├── TEMPLATE.md                  # Template structure for summaries
 ├── schema.json                  # JSON schema for validation
@@ -314,6 +314,115 @@ When token monitoring is enabled, you'll receive warnings:
 ├── session-api-optimization-2026-06-05-093000.md
 └── session-api-optimization-2026-06-05-093000.json
 ```
+
+## Advanced Usage
+
+### Searching Sessions
+
+```bash
+# List all sessions
+ls -lt sessions/session-*.md
+
+# Search for specific topic
+grep -l "authentication" sessions/session-*.md
+
+# View session index
+cat sessions/index.json | jq 'sessions'
+```
+
+### Programmatic Access
+
+The JSON format allows programmatic analysis:
+
+```javascript
+// Load session data
+const session = require('./sessions/session-auth-refactor-2026-06-04-140000.json');
+
+// Analyze file changes
+const modifiedFiles = session.files.modified.length;
+const linesChanged = session.files.modified.reduce(
+  (sum, file) => sum + file.linesAdded + file.linesRemoved, 0
+);
+
+console.log(`Modified ${modifiedFiles} files, ${linesChanged} lines changed`);
+```
+
+### Integration with CI/CD
+
+```yaml
+# Example: GitHub Actions workflow
+- name: Generate Session Summary
+  run: |
+    # Trigger AI to generate summary
+    echo "complete session summary" | ai-assistant
+    
+- name: Commit Session Summary
+  run: |
+    git add sessions/
+    git commit -m "Add session summary"
+    git push
+```
+
+## Troubleshooting
+
+### Git Not Available
+
+If git is not initialized:
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+The tool will note in summaries when git is unavailable and track changes via conversation analysis only.
+
+### Session State Missing
+
+If `.session-state.json` doesn't exist, the tool will:
+- Estimate duration from conversation length
+- Note that token count is estimated
+- Suggest initializing session tracking
+
+### Large Diffs
+
+For very large file changes, the tool may truncate diffs. You can always view full diffs with:
+```bash
+git diff path/to/file
+```
+
+## Future Enhancements
+
+Planned features:
+- CLI tool for session management
+- Real-time token monitoring via API integration
+- VSCode extension with status bar integration
+- Web UI for browsing sessions
+- Session comparison tool
+- Export to PDF/HTML formats
+- Team collaboration features
+
+## Contributing
+
+This tool is designed to be extended. Contributions welcome for:
+- Additional AI model integrations
+- Enhanced token tracking methods
+- CLI tool implementation
+- VSCode extension
+- Documentation improvements
+
+## License
+
+MIT License - Feel free to use and modify for your needs.
+
+## Support
+
+For issues or questions:
+1. Check the `sessions/INSTRUCTIONS.md` file
+2. Review example sessions in `sessions/`
+3. Ensure git is properly initialized
+4. Verify AI assistant can read files and execute commands
+
+---
 
 **Version**: 1.0.0  
 **Last Updated**: 2026-06-04

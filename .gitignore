@@ -1,9 +1,17 @@
 # Session state file (temporary, not version controlled)
-.sessions/.session-state.json
+sessions/.session-state.json
 
-# Optional: Uncomment to exclude all session summaries from version control
-# .sessions/session-*.md
-# .sessions/session-*.json
+# Exclude actual session files (user-specific content)
+sessions/session-*.md
+sessions/session-*.json
+sessions/*/
+
+# Keep infrastructure files:
+# - sessions/INSTRUCTIONS.md
+# - sessions/TEMPLATE.md
+# - sessions/config.json
+# - sessions/schema.json
+# - sessions/index.json
 
 # Node modules (if CLI tool is added)
 node_modules/
